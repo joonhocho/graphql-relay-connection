@@ -1,7 +1,7 @@
 import type {
   ConnectionCursor,
 } from '../src/connectionTypes';
-import defineConnection from '../lib/defineConnection';
+import defineConnection from '../lib';
 import {
   base64,
   unbase64,
