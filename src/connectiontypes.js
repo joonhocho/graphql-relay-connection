@@ -25,6 +25,11 @@ export type ConnectionDefinitionArguments<T> = {
 };
 
 
+export type Options = {
+  unsorted: ?boolean,
+};
+
+
 /**
  * A flow type designed to be exposed as `PageInfo` over GraphQL.
  */
