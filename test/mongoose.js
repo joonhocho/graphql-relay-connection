@@ -2,6 +2,7 @@
 import {describe, it} from 'mocha';
 import {expect} from 'chai';
 import {mongooseConnection} from '../lib';
+import mongoose from 'mongoose';
 
 
 const {
@@ -10,10 +11,17 @@ const {
   connectionFromPromisedArray,
 } = mongooseConnection;
 
+const {ObjectId} = mongoose.Types;
 
 const lastItem = (arr) => arr[arr.length - 1];
-const letters = ['A', 'B', 'C', 'D', 'E'];
-const nodes = letters.map((id) => ({id}));
+const ids = [
+  ObjectId.createFromTime(Date.now() / 1000),
+  ObjectId.createFromTime(Date.now() / 1000 + 1),
+  ObjectId.createFromTime(Date.now() / 1000 + 2),
+  ObjectId.createFromTime(Date.now() / 1000 + 3),
+  ObjectId.createFromTime(Date.now() / 1000 + 4),
+];
+const nodes = ids.map((id) => ({id}));
 const nodesDesc = nodes.slice().reverse();
 const nodesPromise = Promise.resolve(nodes);
 const cursors = nodes.map(documentToCursor);

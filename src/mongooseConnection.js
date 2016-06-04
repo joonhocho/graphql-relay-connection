@@ -2,6 +2,7 @@
 import type {
   ConnectionCursor,
 } from './connectionTypes';
+import mongoose from 'mongoose';
 import defineConnection from './defineConnection';
 import {
   base64,
@@ -19,6 +20,8 @@ export type Document = {
 
 const PREFIX = 'mongoose:';
 
+const {ObjectId} = mongoose.Types;
+
 
 function documentToCursor(doc: Document): ConnectionCursor {
   return base64(PREFIX + doc.id);
@@ -29,7 +32,12 @@ function cursorToDocument(cursor: ConnectionCursor): ?Document {
   const unbased = unbase64(cursor);
   if (startsWith(unbased, PREFIX)) {
     const id = unbased.substring(PREFIX.length);
-    if (id) return {id};
+    if (id && ObjectId.isValid(id)) {
+      return {
+        _id: ObjectId.createFromHexString(id),
+        id,
+      };
+    }
   }
   return null;
 }
