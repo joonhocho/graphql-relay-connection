@@ -30,15 +30,18 @@ const UserType = new GraphQLObjectType({
     friends: {
       type: UserConnection,
       args: connectionArgs,
-      resolve: (user, args) => connectionFromPromisedArray(
-        User.find({
-          isFriendWith: user._id,
-          _id: {$gt: new ObjectId(cursorToDocument(args.after).id)},
-        })
-          .limit(args.first + 1) // add +1 for hasNextPage
-          .exec(),
-        args
-      ),
+      resolve: (user, args) => {
+        const doc = cursorToDocument(args.after);
+        args.first = args.first || 10;
+        connectionFromPromisedArray(
+          User.find({
+            isFriendWith: user._id,
+            _id: {$gt: doc && doc._id},
+          })
+            .limit(args.first + 1) // add +1 for hasNextPage
+            .exec(),
+          args
+        ),
     },
   }),
 });
