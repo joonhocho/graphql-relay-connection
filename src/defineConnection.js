@@ -2,10 +2,8 @@
 import type {
   Connection,
   ConnectionArguments,
-  ConnectionCursor,
   ConnectionDefinitionArguments,
-  Options,
-  PageInfo,
+  ConnectionOptions,
 } from './connectionTypes';
 
 
@@ -106,8 +104,7 @@ export default ({
   function connectionFromArray<T>(
     data: Array<T>,
     args: ConnectionArguments,
-    pageInfo: ?PageInfo,
-    opts: ?Options,
+    options: ?ConnectionOptions,
   ): Connection<T> {
     const {after, before, first, last} = args;
     if (first != null && last != null) {
@@ -123,7 +120,7 @@ export default ({
       hasNextPage,
       sort,
       desc,
-    } = pageInfo || {};
+    } = options || {};
 
     if (!data.length) {
       if (isNotBoolean(hasPreviousPage)) hasPreviousPage = false;
@@ -195,10 +192,9 @@ export default ({
   function connectionFromPromisedArray<T>(
     dataPromise: Promise<Array<T>>,
     args: ConnectionArguments,
-    pageInfo: ?PageInfo,
-    opts: ?Options,
+    options: ?ConnectionOptions,
   ): Promise<Connection<T>> {
-    return dataPromise.then((data) => connectionFromArray(data, args, pageInfo, opts));
+    return dataPromise.then((data) => connectionFromArray(data, args, options));
   }
 
 

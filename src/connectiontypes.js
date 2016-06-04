@@ -25,7 +25,7 @@ export type ConnectionDefinitionArguments<T> = {
 };
 
 
-export type Options = {
+export type ConnectionOptions = {
   hasPreviousPage: ?boolean,
   hasNextPage: ?boolean,
   sort: ?boolean,
