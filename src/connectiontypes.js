@@ -26,7 +26,10 @@ export type ConnectionDefinitionArguments<T> = {
 
 
 export type Options = {
-  unsorted: ?boolean,
+  hasPreviousPage: ?boolean,
+  hasNextPage: ?boolean,
+  sort: ?boolean,
+  desc: ?boolean,
 };
 
 

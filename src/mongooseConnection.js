@@ -1,12 +1,13 @@
+/* @flow */
 import type {
   ConnectionCursor,
-} from './connectiontypes';
-import defineConnection from './define';
+} from './connectionTypes';
+import defineConnection from './defineConnection';
 import {
   base64,
   unbase64,
   startsWith,
-} from './util.js';
+} from './util';
 
 
 export type ID = string;
@@ -16,7 +17,7 @@ export type Document = {
 };
 
 
-const PREFIX = 'mongo:';
+const PREFIX = 'mongoose:';
 
 
 function documentToCursor(doc: Document): ConnectionCursor {
@@ -45,8 +46,28 @@ function compareDocuments(doc1: Document, doc2: Document): number {
 }
 
 
-export default defineConnection({
+const {
+  connectionFromArray,
+  connectionFromPromisedArray,
+} = defineConnection({
   comparableToCursor: documentToCursor,
   cursorToComparable: cursorToDocument,
   comparator: compareDocuments,
 });
+
+
+export {
+  compareDocuments,
+  connectionFromArray,
+  connectionFromPromisedArray,
+  cursorToDocument,
+  documentToCursor,
+};
+
+export default {
+  compareDocuments,
+  connectionFromArray,
+  connectionFromPromisedArray,
+  cursorToDocument,
+  documentToCursor,
+};

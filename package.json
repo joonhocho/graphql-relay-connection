@@ -4,15 +4,16 @@
   "description": "A GraphQL Relay connection with cursor based on id, not on number offset. Can be used for MongoDB.",
   "main": "lib/index.js",
   "scripts": {
+    "clear": "rm -rf ./lib/ ./testout/",
     "build": "babel src --out-dir lib",
     "build-watch": "babel src --watch --out-dir lib",
-    "start": "npm run build && npm run test-build && npm run test",
+    "start": "npm run clear && npm run build && npm run test-build && npm run test",
     "test-build": "babel test --out-dir testout",
     "test-build-watch": "babel test --watch --out-dir testout",
     "test": "mocha testout/**/*.js",
     "test-watch": "mocha --watch testout/**/*.js",
     "watch": "npm run build-watch & npm run test-build-watch & npm run test-watch",
-    "update-D": "npm install --save-dev babel-cli@latest babel-plugin-transform-flow-strip-types@latest babel-preset-es2015@latest babel-preset-stage-0@latest chai@latest chai-as-promised@latest mocha@latest"
+    "update-D": "npm install --save-dev babel-cli@latest babel-plugin-syntax-flow@latest babel-plugin-transform-flow-strip-types@latest babel-plugin-transform-runtime@latest babel-preset-es2015@latest babel-preset-stage-0@latest babel-runtime@latest chai@latest chai-as-promised@latest flow-bin@latest mocha@latest"
   },
   "repository": {
     "type": "git",
@@ -36,11 +37,15 @@
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.9.0",
+    "babel-plugin-syntax-flow": "^6.8.0",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
+    "babel-plugin-transform-runtime": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-stage-0": "^6.5.0",
+    "babel-runtime": "^6.9.2",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.3.0",
+    "flow-bin": "^0.26.0",
     "mocha": "^2.5.3"
   }
 }
