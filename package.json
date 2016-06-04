@@ -1,6 +1,6 @@
 {
   "name": "graphql-relay-connection",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A GraphQL Relay connection with cursor based on id, not on number offset. Can be used for MongoDB.",
   "main": "lib/index.js",
   "scripts": {
