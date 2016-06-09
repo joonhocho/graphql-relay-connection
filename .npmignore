@@ -2,6 +2,7 @@
 .eslintrc
 .gitignore
 .npmignore
+.nyc_output
+coverage
 src
 test
-testout
