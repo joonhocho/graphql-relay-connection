@@ -3,6 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/joonhocho/graphql-relay-connection/badge.svg?branch=master)](https://coveralls.io/github/joonhocho/graphql-relay-connection?branch=master)
 [![npm version](https://badge.fury.io/js/graphql-relay-connection.svg)](https://badge.fury.io/js/graphql-relay-connection)
 [![Dependency Status](https://david-dm.org/joonhocho/graphql-relay-connection.svg)](https://david-dm.org/joonhocho/graphql-relay-connection)
+[![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 A GraphQL Relay connection with custom cursor functions.
 Can be used for MongoDB, Mongoose, plain objects, scalars, or any data formats.
