@@ -44,6 +44,7 @@
     "@types/jest": "^23.3.1",
     "@types/mongoose": "^5.2.3",
     "@types/node": "^10.5.4",
+    "coveralls": "^3.0.2",
     "jest": "^23.4.2",
     "mongoose": "^5.2.6",
     "prettier": "^1.14.0",
