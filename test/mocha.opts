@@ -1,4 +1,0 @@
---compilers js:babel-register
---require ./test/setup.js
---reporter spec
---timeout 5000

@@ -34,4 +34,6 @@ node_modules
 
 # Compiled source
 .nyc_output
+cjs
+dist
 lib

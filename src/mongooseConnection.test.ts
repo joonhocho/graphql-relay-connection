@@ -1,9 +1,5 @@
-/* @flow */
-import {describe, it} from 'mocha';
-import {expect} from 'chai';
-import {mongooseConnection} from '../lib';
-import mongoose from 'mongoose';
-
+import { ObjectId } from 'bson';
+import { mongooseConnection } from './index';
 
 const {
   documentToCursor,
@@ -11,9 +7,8 @@ const {
   connectionFromPromisedArray,
 } = mongooseConnection;
 
-const {ObjectId} = mongoose.Types;
-
-const lastItem = (arr) => arr[arr.length - 1];
+const lastItem = <T>(arr: T[]): T | undefined => arr[arr.length - 1];
+const beforeId = ObjectId.createFromTime(Date.now() / 1000 - 1);
 const ids = [
   ObjectId.createFromTime(Date.now() / 1000),
   ObjectId.createFromTime(Date.now() / 1000 + 1),
@@ -21,7 +16,8 @@ const ids = [
   ObjectId.createFromTime(Date.now() / 1000 + 3),
   ObjectId.createFromTime(Date.now() / 1000 + 4),
 ];
-const nodes = ids.map((id) => ({id}));
+const afterId = ObjectId.createFromTime(Date.now() / 1000 + 5);
+const nodes = ids.map((_id) => ({ _id }));
 const nodesDesc = nodes.slice().reverse();
 const nodesPromise = Promise.resolve(nodes);
 const cursors = nodes.map(documentToCursor);
@@ -30,12 +26,16 @@ const edges = nodes.map((node, i) => ({
   cursor: cursors[i],
 }));
 
-
+const defaultOptions = { sorted: true, desc: false };
 describe('connectionFromArray()', () => {
   describe('basic slicing', () => {
     it('returns all elements without filters', () => {
-      const c = connectionFromArray(nodes, {});
-      return expect(c).to.deep.equal({
+      const c = connectionFromArray(
+        nodes,
+        { first: nodes.length },
+        defaultOptions
+      );
+      expect(c).toEqual({
         edges,
         pageInfo: {
           startCursor: cursors[0],
@@ -47,8 +47,8 @@ describe('connectionFromArray()', () => {
     });
 
     it('respects a smaller first', () => {
-      const c = connectionFromArray(nodes, {first: 2});
-      return expect(c).to.deep.equal({
+      const c = connectionFromArray(nodes, { first: 2 }, defaultOptions);
+      expect(c).toEqual({
         edges: edges.slice(0, 2),
         pageInfo: {
           startCursor: cursors[0],
@@ -60,8 +60,8 @@ describe('connectionFromArray()', () => {
     });
 
     it('respects an overly large first', () => {
-      const c = connectionFromArray(nodes, {first: 10});
-      return expect(c).to.deep.equal({
+      const c = connectionFromArray(nodes, { first: 10 }, defaultOptions);
+      expect(c).toEqual({
         edges,
         pageInfo: {
           startCursor: cursors[0],
@@ -73,8 +73,8 @@ describe('connectionFromArray()', () => {
     });
 
     it('respects a smaller last', () => {
-      const c = connectionFromArray(nodes, {last: 2});
-      return expect(c).to.deep.equal({
+      const c = connectionFromArray(nodes, { last: 2 }, defaultOptions);
+      expect(c).toEqual({
         edges: edges.slice(-2),
         pageInfo: {
           startCursor: cursors[3],
@@ -86,8 +86,8 @@ describe('connectionFromArray()', () => {
     });
 
     it('respects an overly large last', () => {
-      const c = connectionFromArray(nodes, {last: 10});
-      return expect(c).to.deep.equal({
+      const c = connectionFromArray(nodes, { last: 10 }, defaultOptions);
+      expect(c).toEqual({
         edges,
         pageInfo: {
           startCursor: cursors[0],
@@ -103,9 +103,10 @@ describe('connectionFromArray()', () => {
     it('respects first and after', () => {
       const c = connectionFromArray(
         nodes,
-        {first: 2, after: cursors[1]}
+        { first: 2, after: cursors[1] },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(2, 4),
         pageInfo: {
           startCursor: cursors[2],
@@ -119,9 +120,10 @@ describe('connectionFromArray()', () => {
     it('respects first and after with long first', () => {
       const c = connectionFromArray(
         nodes,
-        {first: 10, after: cursors[1]}
+        { first: 10, after: cursors[1] },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(2),
         pageInfo: {
           startCursor: cursors[2],
@@ -135,9 +137,10 @@ describe('connectionFromArray()', () => {
     it('respects last and before', () => {
       const c = connectionFromArray(
         nodes,
-        {last: 2, before: cursors[3]}
+        { last: 2, before: cursors[3] },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(1, 3),
         pageInfo: {
           startCursor: cursors[1],
@@ -151,9 +154,10 @@ describe('connectionFromArray()', () => {
     it('respects last and before with long last', () => {
       const c = connectionFromArray(
         nodes,
-        {last: 10, before: cursors[3]}
+        { last: 10, before: cursors[3] },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(0, 3),
         pageInfo: {
           startCursor: cursors[0],
@@ -171,9 +175,10 @@ describe('connectionFromArray()', () => {
           first: 2,
           after: cursors[0],
           before: cursors[4],
-        }
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(1, 3),
         pageInfo: {
           startCursor: cursors[1],
@@ -191,9 +196,10 @@ describe('connectionFromArray()', () => {
           first: 4,
           after: cursors[0],
           before: cursors[4],
-        }
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(1, 4),
         pageInfo: {
           startCursor: cursors[1],
@@ -211,9 +217,10 @@ describe('connectionFromArray()', () => {
           first: 3,
           after: cursors[0],
           before: cursors[4],
-        }
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(1, 4),
         pageInfo: {
           startCursor: cursors[1],
@@ -231,9 +238,10 @@ describe('connectionFromArray()', () => {
           last: 2,
           after: cursors[0],
           before: cursors[4],
-        }
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(2, 4),
         pageInfo: {
           startCursor: cursors[2],
@@ -251,9 +259,10 @@ describe('connectionFromArray()', () => {
           last: 4,
           after: cursors[0],
           before: cursors[4],
-        }
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(1, 4),
         pageInfo: {
           startCursor: cursors[1],
@@ -271,9 +280,10 @@ describe('connectionFromArray()', () => {
           last: 3,
           after: cursors[0],
           before: cursors[4],
-        }
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(1, 4),
         pageInfo: {
           startCursor: cursors[1],
@@ -287,32 +297,33 @@ describe('connectionFromArray()', () => {
 
   describe('cursor edge cases', () => {
     it('throws if first is 0', () => {
-      expect(() => connectionFromArray(
-        nodes,
-        {first: 0}
-      )).to.throw();
+      expect(() =>
+        connectionFromArray(nodes, { first: 0 }, defaultOptions)
+      ).toThrow();
     });
 
     it('throws if last is 0', () => {
-      expect(() => connectionFromArray(
-        nodes,
-        {last: 0}
-      )).to.throw();
+      expect(() =>
+        connectionFromArray(nodes, { last: 0 }, defaultOptions)
+      ).toThrow();
     });
 
     it('throws if both first and last are set', () => {
-      expect(() => connectionFromArray(
-        nodes,
-        {first: 1, last: 1}
-      )).to.throw();
+      expect(() =>
+        connectionFromArray(nodes, { first: 1, last: 1 } as any, defaultOptions)
+      ).toThrow();
     });
 
     it('returns all elements if cursors are invalid', () => {
       const c = connectionFromArray(
         nodes,
-        {before: 'invalid', after: 'invalid'}
+        {
+          before: 'invalid',
+          after: 'invalid',
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges,
         pageInfo: {
           startCursor: cursors[0],
@@ -327,11 +338,12 @@ describe('connectionFromArray()', () => {
       const c = connectionFromArray(
         nodes,
         {
-          before: documentToCursor({id: 'F'}),
-          after: documentToCursor({id: '0'}),
-        }
+          before: documentToCursor({ _id: afterId }),
+          after: documentToCursor({ _id: beforeId }),
+        },
+        defaultOptions
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges,
         pageInfo: {
           startCursor: cursors[0],
@@ -343,17 +355,24 @@ describe('connectionFromArray()', () => {
     });
 
     it('throws if cursors cross', () => {
-      expect(() => connectionFromArray(
-        nodes,
-        {before: cursors[2], after: cursors[4]}
-      )).to.throw();
+      expect(() =>
+        connectionFromArray(
+          nodes,
+          { before: cursors[2], after: cursors[4] },
+          defaultOptions
+        )
+      ).toThrow();
     });
   });
 
   describe('pageInfo', () => {
     it('overrides hasPreviousPage', () => {
-      const c = connectionFromArray(nodes, {}, {hasPreviousPage: true});
-      return expect(c).to.deep.equal({
+      const c = connectionFromArray(
+        nodes,
+        {},
+        { ...defaultOptions, hasPreviousPage: true }
+      );
+      expect(c).toEqual({
         edges,
         pageInfo: {
           startCursor: cursors[0],
@@ -365,8 +384,12 @@ describe('connectionFromArray()', () => {
     });
 
     it('overrides hasNextPage', () => {
-      const c = connectionFromArray(nodes, {}, {hasNextPage: true});
-      return expect(c).to.deep.equal({
+      const c = connectionFromArray(
+        nodes,
+        {},
+        { ...defaultOptions, hasNextPage: true }
+      );
+      expect(c).toEqual({
         edges,
         pageInfo: {
           startCursor: cursors[0],
@@ -383,10 +406,10 @@ describe('connectionFromArray()', () => {
       const unsortedNodes = [2, 0, 3, 4, 1].map((i) => nodes[i]);
       const c = connectionFromArray(
         unsortedNodes,
-        {first: 2, after: cursors[1]},
-        {sort: true}
+        { first: 2, after: cursors[1] },
+        { ...defaultOptions, sorted: false }
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(2, 4),
         pageInfo: {
           startCursor: cursors[2],
@@ -400,10 +423,10 @@ describe('connectionFromArray()', () => {
     it('desc', () => {
       const c = connectionFromArray(
         nodesDesc,
-        {first: 2, after: cursors[3]},
-        {desc: true}
+        { first: 2, after: cursors[3] },
+        { ...defaultOptions, desc: true }
       );
-      return expect(c).to.deep.equal({
+      expect(c).toEqual({
         edges: edges.slice(1, 3).reverse(),
         pageInfo: {
           startCursor: cursors[2],
@@ -414,12 +437,38 @@ describe('connectionFromArray()', () => {
       });
     });
   });
+
+  it('bad cursor', () => {
+    const c = connectionFromArray(
+      nodes,
+      {
+        first: 2,
+        after: documentToCursor({
+          _id: { toHexString: (): string => 'badhex' },
+        } as any),
+      },
+      defaultOptions
+    );
+    expect(c).toEqual({
+      edges: edges.slice(0, 2),
+      pageInfo: {
+        startCursor: cursors[0],
+        endCursor: cursors[1],
+        hasPreviousPage: false,
+        hasNextPage: true,
+      },
+    });
+  });
 });
 
 describe('connectionFromPromisedArray()', () => {
   it('returns all elements without filters', async () => {
-    const c = await connectionFromPromisedArray(nodesPromise, {});
-    return expect(c).to.deep.equal({
+    const c = await connectionFromPromisedArray(
+      nodesPromise,
+      {},
+      defaultOptions
+    );
+    expect(c).toEqual({
       edges,
       pageInfo: {
         startCursor: cursors[0],
@@ -431,8 +480,12 @@ describe('connectionFromPromisedArray()', () => {
   });
 
   it('respects a smaller first', async () => {
-    const c = await connectionFromPromisedArray(nodesPromise, {first: 2});
-    return expect(c).to.deep.equal({
+    const c = await connectionFromPromisedArray(
+      nodesPromise,
+      { first: 2 },
+      defaultOptions
+    );
+    expect(c).toEqual({
       edges: edges.slice(0, 2),
       pageInfo: {
         startCursor: cursors[0],

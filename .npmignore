@@ -3,6 +3,8 @@
 .gitignore
 .npmignore
 .nyc_output
+jest.config.js
+prettier.config.js
 coverage
 src
 test
