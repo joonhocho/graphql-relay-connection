@@ -1,6 +1,6 @@
 {
   "name": "graphql-relay-connection",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "A GraphQL Relay connection with cursor based on id, not on number offset. Can be used for MongoDB.",
   "main": "cjs/index.js",
   "module": "lib/index.js",
@@ -17,6 +17,7 @@
     "start": "yarn clear && yarn test && yarn build",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "test:coverage:report": "jest --coverage && cat ./coverage/lcov.info | coveralls",
     "test:watch": "jest --watch"
   },
   "repository": {
