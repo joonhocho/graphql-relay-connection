@@ -7,8 +7,8 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "yarn build:ts:esm && yarn build:ts:cjs",
-    "build:ts:cjs": "tsc -p ./tsconfig.cjs.json",
-    "build:ts:esm": "tsc -p ./tsconfig.esm.json",
+    "build:ts:cjs": "tsc -p ./tsconfig.cjs.json && tscpaths -p ./tsconfig.cjs.json",
+    "build:ts:esm": "tsc -p ./tsconfig.esm.json && tscpaths -p ./tsconfig.esm.json",
     "clear": "rm -rf ./lib ./cjs ./esm ./coverage",
     "format": "prettier --write './src/**/*.{js,jsx,ts,tsx}'",
     "lint": "tslint -c ./tslint.json 'src/**/*'",
@@ -42,16 +42,17 @@
   "dependencies": {},
   "devDependencies": {
     "@types/jest": "^23.3.1",
-    "@types/mongoose": "^5.2.3",
-    "@types/node": "^10.5.4",
+    "@types/mongoose": "^5.2.7",
+    "@types/node": "^10.9.2",
     "coveralls": "^3.0.2",
-    "jest": "^23.4.2",
-    "mongoose": "^5.2.6",
-    "prettier": "^1.14.0",
-    "ts-jest": "^23.0.1",
+    "jest": "^23.5.0",
+    "mongoose": "^5.2.9",
+    "prettier": "^1.14.2",
+    "ts-jest": "^23.1.4",
+    "tscpaths": "^0.0.3",
     "tslint": "^5.11.0",
-    "tslint-config-airbnb": "^5.9.2",
-    "tslint-config-prettier": "^1.14.0",
+    "tslint-config-airbnb": "^5.10.0",
+    "tslint-config-prettier": "^1.15.0",
     "typescript": "^3.0.1"
   }
 }
